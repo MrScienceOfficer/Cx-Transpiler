@@ -191,19 +191,17 @@ Traits Symbol {
 	@Symbol *next;
 	@Array<@Symbol> kids;
 	@Type type;
-	@Text<char> text;
+	@Text<char> *text;
 
 	@!< @Text<char> *text> : 
 		.previous = NULL, 
 		.next = NULL, 
-		.kids{
+		.kids {
 			!Pointer = NULL,
-			!Length = 0
-		.text{
-			.ptr = NULL,
 			!Length = 0,
-		},
-		.type = -1 
+		}
+		.text = text,
+		.type = -1
 	{}
 
 	@!< void get_last_kid()> {
@@ -212,14 +210,16 @@ Traits Symbol {
 };
 
 Struct C_Text : Symbol {
-	@!<> {	
-		@->type = @Symbol.Type.C_TEXT;
-	}	
+	@!< @Text<char> *text> : 
+		.type = @Symbol.Type.C_TEXT,
+		.text = text {
+	}
 };
 
 Struct Cx_Text : Symbol {
-	@!<> {
-		@->type = @Symbol.Type.CX_TEXT;
+	@!< @Text<char> *text> :
+		.type = @Symbol.Type.CX_TEXT,
+		.text = text, {
 	}
 	
 };
@@ -229,8 +229,18 @@ Struct Cx_Trait : Symbol {
 	@!Operator char;
 	@!Expression char*;	
 
-	@!<> {
-		@->type = @Symbol.Type.CX_TRAIT;
+	Enumerator Operator : char* {
+		"+",
+		"+=",
+		"*",
+		"*=",
+		"/",
+		NULL
+	}
+
+	@!< @Text<char> *text> :
+		.type = @Symbol.Type.CX_TRAIT,
+		.text = text {
 	}
 
 	@!< void read(Text *t)> {
@@ -246,6 +256,12 @@ Struct Cx_Trait : Symbol {
 		char *exp_s = t@move_past_whitespace();
 		char *exp_e = t@move_to(';');
 		@->!Expression = t@copy(exp_s, exp_e-exp_s);
+	}
+
+	@!< char get_operator_type(char *start, unsigned len)> {
+		unsigned i = 0;
+		while (strncmp(start, len, 
+			@Operator[i], @Operator{i, "length"})) ++i;
 	}
 }; 
 
@@ -265,9 +281,9 @@ Struct Cx_Space : Symbol {
 		char *has_bases = t@move_to(':')
 		char *content_s = t@move_to('{');
 		if (has_bases > content_s) {
-			char *has_mutli_bases = t@move_to(',');
-			while (has_mutli_bases < content_s) {
-				has_mutli_bases = t@move_to(',');
+			char *has_multi_bases = t@move_to(',');
+			while (has_multi_bases < content_s) {
+				has_multi_bases = t@move_to(',');
 			}
 			@->!Bases.Append(t@copy());
 		}
