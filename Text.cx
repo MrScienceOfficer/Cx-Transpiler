@@ -1,4 +1,4 @@
-/ Cx Text.h
+// Cx Text.h
 // Tom Bishop
 // This software is licensed under the Human License.
 //
@@ -94,7 +94,7 @@ Struct Text {
 		return @->!Position = c+p;
 	}
 
-	@!< void move_to_paired(char_t start, char_t end)> {
+	@!< void move_to_paired(@width_t start, @width_t end)> {
 		char *c = @->!Position;
 		if (*c == start) {
 			int open = 1;
