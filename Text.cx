@@ -24,12 +24,11 @@
 // Human Licensed code including compiling or linking with,
 // dynamically or statically, to any Human Licensed code, written or generated.
 
-Namespace <"width_t"> {
 
 @!Filepath = char*;
-@!String = @width_t*;
+@!String = char*;
 
-Struct Text {
+Struct Text<"width_T"> {
 	@!Data @width_t*;
 	@!Position @width_t*;
 	@!Length int len;
@@ -131,7 +130,6 @@ Struct Text {
 	} 
 
 };
-}//unnamed
 
 Traits Array<"element_T", "reserve_policy"=0> {
 	@!Pointer element_T *elems;
@@ -195,14 +193,18 @@ Traits Symbol {
 	@Type type;
 	@Text<char> text;
 
-	@!<> {
-		@->previous = @->next = @->kids = NULL;
-		@->text = @Text<char>{
+	@!< @Text<char> *text> : 
+		.previous = NULL, 
+		.next = NULL, 
+		.kids{
+			!Pointer = NULL,
+			!Length = 0
+		.text{
 			.ptr = NULL,
 			!Length = 0,
-		};
-		type = -1;
-	}
+		},
+		.type = -1 
+	{}
 
 	@!< void get_last_kid()> {
 		return  @<@->kids[-1]>;
