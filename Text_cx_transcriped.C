@@ -25,21 +25,18 @@
 // dynamically or statically, to any Human Licensed code, written or generated.
 
 
-//anonymous namespace "char"
+typedef Filepath char*;
+typedef String char*;
 
-typedef anon_width_t char;
-typedef anon_Filepath char*;
-typedef anon_String anon_width_t*;
-
-struct anon__Text {
-	anon_width_t *Data;
-	anon_width_t *Position;
+struct Text {
+	width_t *Data;
+	width_t *Position;
 	int len;
 };
 
-anon_Text *anon_Text__anon_Filepath
-(anon_Filepath path) {
-	anon_Text *ret =(anon_Text*)malloc(sizeof(anon_Text));
+Text *Text__Filepath
+(Filepath path) {
+	Text *ret =(Text*)malloc(sizeof(Text));
 	
 	FILE *f = fopen(path, "r");
    ret->Position = NULL;
@@ -48,16 +45,16 @@ anon_Text *anon_Text__anon_Filepath
    fseek(f, 0, SEEK_END);
    ret->Length = ftell(f);
    rewind(f);
-   ret->Data = (anon_width_t*)malloc((sizeof(anon_width_t))*ret->len);
-   fread(ret->Data, (sizeof(anon_width_t)), ret->len, f);
+   ret->Data = (width_t*)malloc((sizeof(width_t))*ret->len);
+   fread(ret->Data, (sizeof(width_t)), ret->len, f);
    fclose(f);
 
 	return ret;
 }
 
-anon_Text *anon_Text__anon_width_t
-(anon_width_t *text) {
-   anon_Text *ret = (anon_Text*)malloc(sizeof(anon_Text));
+Text *Text__width_t
+(width_t *text) {
+   Text *ret = (Text*)malloc(sizeof(Text));
 	
 	ret->Data = text;
 	while(++text) ++ret->len;
@@ -65,9 +62,9 @@ anon_Text *anon_Text__anon_width_t
 	return ret;
 }
 
-anon_Text *anon_Text__anon_width_t
-(anon_width_t *text, int len) {
-	anon_Text *ret = (anon_Text*)malloc(sizeof(anon_Text));
+Text *Text__width_t
+(width_t *text, int len) {
+	Text *ret = (Text*)malloc(sizeof(Text));
 
 	ret->Data = text;
 	ret->len = len;
@@ -75,8 +72,8 @@ anon_Text *anon_Text__anon_width_t
 	return ret;
 }
 
-bool anon_Text__is_next__anon_String
-(anon_Text *this, anon_String match) {
+bool Text__is_next__String
+(Text *this, String match) {
 	char *c = this->Position;
 	while (isspace(*c)) ++c;
 	int p = 0;
@@ -87,24 +84,24 @@ bool anon_Text__is_next__anon_String
 	return 1;
 }
 
-bool anon_Text__is_next__char
-(anon_Text *this, char match) {
+bool Text__is_next__char
+(Text *this, char match) {
 	char *c = this->Position;
 	while (isspace(*c)) ++c;
 	return *c == match;
 }
 
-void anon_Text__move_to__char
-(anon_Text *this, char match) {
-	anon_width_t *c = this->Position;
+void Text__move_to__char
+(Text *this, char match) {
+	width_t *c = this->Position;
 	do {
 	if (*c == match)
       ;
 	} while (++c);
 }
 
-void anon_Text__move_to__anon_String
-(anon_Text *this, String match) {
+void Text__move_to__String
+(Text *this, String match) {
       char *c  = this->Position;
       int p = 0;
       while (match[p]) {
@@ -117,8 +114,8 @@ void anon_Text__move_to__anon_String
       return this->Position = c+p;
    }
 
-void anon_Text__move_to_paired__anon_width_t__anon_width_t
-(anon_Text *this, anon_width_t start, anon_width_t end) {
+void Text__move_to_paired__width_t__width_t
+(Text *this, width_t start, width_t end) {
 	char *c = this->Position;
 	if (*c == start) {
       int open = 1;
@@ -133,9 +130,9 @@ void anon_Text__move_to_paired__anon_width_t__anon_width_t
 	return NULL;
 }
 
-anon_width_t *anon_Text__select_first_of__anon_width_t
-(anon_Text *this, anon_width_t *match_set)> {
-      @width_t *chars = match_set;
+width_t *Text__select_first_of__width_t
+(Text *this, width_t *match_set)> {
+      width_t *chars = match_set;
       do {
          int i = 0;
       do {
@@ -146,7 +143,7 @@ anon_width_t *anon_Text__select_first_of__anon_width_t
       this->C = c;
    }
 
-char* anon_Text__get_current_word__
+char* Text__get_current_word__
 () {
   // @char{} word { x, y } = { @->!Position };
 	char *word = malloc(sizeof(char) * 2);
@@ -156,5 +153,31 @@ char* anon_Text__get_current_word__
    word[1] = word[0]
    while (isalnum(word[1])) ++word[1];
    return word;
+}
+
+
+struct Symbol {
+	typedef Symbol *previous;
+	typedef Symbol *next;
+	
+	Symbol *kids__elems;
+	unsigned kids__len;
+	unsigned kids__capt;
+
+	char type;
+		
+};
+
+struct C_Text {
+	Symbol _0_this;
+};
+
+C_Text *C_Text__
+() {
+	C_Text *this = (C_Text*)malloc(sizeof(C_Text));
+
+   this->type = 0;//@Symbol.Type.C_TEXT;
+
+	return this;
 }
 
