@@ -1,4 +1,4 @@
-// Cx Text.h
+/ Cx Text.h
 // Tom Bishop
 // This software is licensed under the Human License.
 //
@@ -37,25 +37,22 @@ Struct Text {
 	@!char_t = @width_t;
 	@!Width_Size = sizeof(@width_t);
 
-	//create_Text_filepath(char *path)
 	@!< @Filepath path> {
 		FILE *f = fopen(path, "r");
-		@ptr = NULL;
+		@->!Position = NULL;
 
 		if (!f) return NULL;	
 		fseek(f, 0, SEEK_END);
 		@->!Length = ftell(f);
 		rewind(f);
 		@->!Data = (@width_t*)malloc(@Width_Size*@->len));
-		fread(@->!Data, @Width_Size, @len, f);
+		fread(@->!Data, @Width_Size, @->len, f);
 		fclose(f);
 	}
-	//create_Text_charptr(char *text)
 	@!< @width_t *text> {
 		@->!Data = text;
-		while(++text) ++@->Length;
+		while(++text) ++@->!Length;
 	}
-	//create_Text_char_int(char *text, int len)
 	@!< @width_t *text, int len> {
 		@->!Data = text;
 		@->!Length = len;
