@@ -28,7 +28,7 @@
 @!Filepath = char*;
 @!String = char*;
 
-Struct Text<"width_T"> {
+Struct Text<"width_t"> {
 	@!Data @width_t*;
 	@!Position @width_t*;
 	@!Length int len;
@@ -117,7 +117,7 @@ Struct Text<"width_T"> {
 				return match_set[i];
 		} while (++i && *(++chars));
 		} while (*(++c));
-		@C = c;
+		@->!Position = c;
 	}
 
 	@!< @char[2] get_current_word()> {
@@ -131,6 +131,9 @@ Struct Text<"width_T"> {
 
 };
 
+//Only Namespace and Traits can contain
+//element declarations (similar to templates) 
+//Struct is always concrete
 Traits Array<"element_T", "reserve_policy"=0> {
 	@!Pointer element_T *elems;
 	@!Length unsigned len;
@@ -229,13 +232,17 @@ Struct Cx_Trait : Symbol {
 	@!Operator char;
 	@!Expression char*;	
 
+	//this becomes one null terminated string with
+	//a static list of offsets and lengths
+	// accesed with `enum_name[index]` and
+	//`enum_name{index, "length"}
 	Enumerator Operator : char* {
 		"+",
 		"+=",
 		"*",
 		"*=",
 		"/",
-		"/=",
+		"/="
 	}
 
 	@!< @Text<char> *text> :
@@ -299,7 +306,7 @@ Struct Cx_Traits : Symbol {
 
 Struct Cx_Struct : Cx_Space {
 	@!< void read(Text *t)> {
-		@::Cx_Space.read(this, t);		
+		@->::Cx_Space.read(this, t);		
 	}
 
 };
