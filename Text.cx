@@ -166,11 +166,11 @@ Traits Array<"element_T", "reserve_policy"=0> {
 		@->len = 0;
 	}
 
-	@<element_T* [](unsigned i)> {
+	@!< @element_T* [](unsigned i)> {
 		return @->elems[i];
 	}
 	
-	@<element_T* [](int i)> {
+	@!< @element_T* [](int i)> {
 		if (i > 0)
 			return @->elems[i];
 		else
@@ -235,7 +235,7 @@ Struct Cx_Trait : Symbol {
 		"*",
 		"*=",
 		"/",
-		NULL
+		"/=",
 	}
 
 	@!< @Text<char> *text> :
@@ -298,9 +298,8 @@ Struct Cx_Traits : Symbol {
 };
 
 Struct Cx_Struct : Cx_Space {
-
 	@!< void read(Text *t)> {
-		@->::Cx_Space.read(t);		
+		@::Cx_Space.read(this, t);		
 	}
 
 };

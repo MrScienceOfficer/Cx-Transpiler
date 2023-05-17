@@ -130,7 +130,7 @@ void Text__move_to_paired__width_t__width_t
 	return NULL;
 }
 
-width_t *Text__select_first_of__width_t
+char *Text__select_first_of__width_t
 (Text *this, width_t *match_set)> {
       width_t *chars = match_set;
       do {
@@ -143,7 +143,7 @@ width_t *Text__select_first_of__width_t
       this->C = c;
    }
 
-char* Text__get_current_word__
+char *Text__get_current_word__
 () {
   // @char{} word { x, y } = { @->!Position };
 	char *word = malloc(sizeof(char) * 2);
@@ -165,8 +165,14 @@ struct Symbol {
 	unsigned kids__capt;
 
 	char type;
-		
+	Text text;
 };
+
+Symbol *Symbol__init
+(Symbol *this) {
+	
+	return this;
+}
 
 struct C_Text {
 	Symbol _0_this;
@@ -180,4 +186,10 @@ C_Text *C_Text__
 
 	return this;
 }
+
+Cx_Text *Cx_Text__
+() {
+	Cx_Text *this = (Cx_Text*)malloc(sizeof(C_Text));
+}
+
 
