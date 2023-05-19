@@ -156,18 +156,40 @@ char *Text__get_current_word__
 }
 
 
+/*this is problematic because
+ * traits are not real and in my
+ * imagination this shouldnt be done
+ * butt obviously then there is no
+ * way to take a base pointer to any derived type
+ * and would need to alawys use void*
+ * which sounds bad
+ *
+ * It seems most reasonable to generate
+ * all the traits as needed.
+ *
+ *	Which brings us back to the original issue
+ *	of potential cyclical type depedencies where
+ *	Array__Symbol for example is also a part
+ *	of Symbol.
+ * */
+
+struct Symbol;
+
+struct Array__Symbol {
+	typedef Symbol *elems;
+	unsigned len;
+};
+
 struct Symbol {
-	typedef Symbol *previous;
-	typedef Symbol *next;
-	
-	Symbol *kids__elems;
-	unsigned kids__len;
-	unsigned kids__capt;
+	struct Symbol *previous;
+	struct Symbol *next;
+	struct Array__Symbol *kids;
 
 	char type;
 	Text text;
 };
 
+/*this shouldnt exist maybe*/
 Symbol *Symbol__init
 (Symbol *this) {
 	
@@ -181,6 +203,7 @@ struct C_Text {
 C_Text *C_Text__
 () {
 	C_Text *this = (C_Text*)malloc(sizeof(C_Text));
+	
 
    this->type = 0;//@Symbol.Type.C_TEXT;
 

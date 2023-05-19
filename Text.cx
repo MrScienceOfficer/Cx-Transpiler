@@ -152,7 +152,7 @@ Traits Array<"element_T", "reserve_policy"=0> {
 
 	@!< void Append(@element_T *elem)> {
 		if (@->capt < ++@->len)
-			realloc
+			realloc();
 		@->elems[@->len] = elem;
 		@If<reserve_policy> {
 			if (++@->len > @->capt)
@@ -245,7 +245,7 @@ Struct Cx_Trait : Symbol {
 		"/="
 	}
 
-	@!< @Text<char> *text> :
+	@!< @Text<"char"> *text> :
 		.type = @Symbol.Type.CX_TRAIT,
 		.text = text {
 	}
@@ -306,7 +306,7 @@ Struct Cx_Traits : Symbol {
 
 Struct Cx_Struct : Cx_Space {
 	@!< void read(Text *t)> {
-		@->::Cx_Space.read(this, t);		
+		@->::Cx_Space.read(t);		
 	}
 
 };
