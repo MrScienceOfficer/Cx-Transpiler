@@ -146,8 +146,8 @@ char *Text__select_first_of__width_t
 char *Text__get_current_word__
 () {
   // @char{} word { x, y } = { @->!Position };
-	char *word = malloc(sizeof(char) * 2);
-  	word[0] = word[1] = this->Position;
+char *word = malloc(sizeof(char) * 2);
+ 	word[0] = word[1] = this->Position;
    while (isspace(word[0])) ++word[0];
    while (isalnum(word[0])) --word[0];
    word[1] = word[0]
@@ -176,7 +176,7 @@ char *Text__get_current_word__
 struct Symbol;
 
 struct Array__Symbol {
-	typedef Symbol *elems;
+	struct Symbol *elems;
 	unsigned len;
 };
 
@@ -189,7 +189,11 @@ struct Symbol {
 	Text text;
 };
 
-/*this shouldnt exist maybe*/
+/*this shouldnt exist maybe..
+  ... Traits never allocate any data
+  but they do need to 
+  initialize their members.
+ */
 Symbol *Symbol__init
 (Symbol *this) {
 	
