@@ -2,7 +2,7 @@
 Cx is an Object Oriented Transpiler for C with sophisticated template meta-programming capabilities and direct support for C Python.
 
 # It's C
-Cx is not a compiler, it is a source(Cx) to source(C); Cx requires a C compiler.
+Cx is not a compiler, it is a source(Cx) to source(C) translator; Cx requires a C compiler.
 
 # Why?
 Because the C compiler needs for nothing and no one.
