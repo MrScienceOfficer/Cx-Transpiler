@@ -192,7 +192,7 @@ Traits Symbol {
 
 	@Symbol *previous;
 	@Symbol *next;
-	@Array<Symbol> kids;
+	@Array<Symbol*> kids;
 	@Type type;
 	@Text<char> *text;
 
@@ -207,7 +207,7 @@ Traits Symbol {
 		.type = -1
 	{}
 
-	@!< void get_last_kid()> {
+	@!< @Symbol *get_last_kid()> {
 		return  @<@->kids[-1]>;
 	}
 };
@@ -251,18 +251,18 @@ Struct Cx_Trait : Symbol {
 	}
 
 	@!< void read(Text *t)> {
-		@t->move_to_end("@!");
-		char *name_s = @t->move_to_next_word();
-		char *name_e = @t->move_to_end_of_word();
-		@->!Name = @t->copy(name_s, name_e);
+		t@->move_to_end("@!");
+		char *name_s = t@->move_to_next_word();
+		char *name_e = t@->move_to_end_of_word();
+		@->!Name = t@->copy(name_s, name_e);
 
-		char *op_s = @t->move_past_whitespace();
-		char *op_e = @t->move_past_any_of("+=-*/");
+		char *op_s = t@->move_past_whitespace();
+		char *op_e = t@->move_past_any_of("+=-*/");
 		@->!Operator = @->get_operator_type(op_s, op_e-op_s);
 
-		char *exp_s = @t->move_past_whitespace();
-		char *exp_e = @t->move_to(';');
-		@->!Expression = @t->copy(exp_s, exp_e-exp_s);
+		char *exp_s = t@->move_past_whitespace();
+		char *exp_e = t@->move_to(';');
+		@->!Expression = t@->copy(exp_s, exp_e-exp_s);
 	}
 
 	@!< char get_operator_type(char *start, unsigned len)> {
@@ -282,17 +282,17 @@ Struct Cx_Space : Symbol {
 	@!Member_List;
 
 	@!< void read(Text *t) > {
-		@char[2] typetype = @t->get_current_word();
-		@t->move_past_whitespace();
-		@char[2] typename = @t->get_current_word();
-		char *has_bases = @t->move_to(':')
-		char *content_s = @t->move_to('{');
+		@char[2] typetype = t@->get_current_word();
+		t@->move_past_whitespace();
+		@char[2] typename = t@->get_current_word();
+		char *has_bases = t@->move_to(':')
+		char *content_s = t@->move_to('{');
 		if (has_bases > content_s) {
-			char *has_multi_bases = @t->move_to(',');
+			char *has_multi_bases = t@->move_to(',');
 			while (has_multi_bases < content_s) {
-				has_multi_bases = @t->move_to(',');
+				has_multi_bases = t@->move_to(',');
 			}
-			@->!Bases.Append(@t->copy());
+			@->!Bases.Append(t@->copy());
 		}
 	}
 };
@@ -315,11 +315,11 @@ Struct Cx_Struct : Cx_Space {
 @!Test<Cx_Main ^main> {
 	@Text<char> texts[main@Args_Count];
 	@For< v : main@Args_Count > {
-		texts[v] = @Text<char>(<@Filepath>main@Args[v]);
+		texts[v] = @Text<char>(<@Filepath>(main@Args[v]));
 	}
 	
 	if (@texts.is_next("//")) {
-		printf("%s", @texts->!Pointer);
+		printf("%s", texts@->!Pointer);
 	}
 
 	return 1;

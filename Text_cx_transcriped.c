@@ -28,6 +28,7 @@
 typedef Filepath char*;
 typedef String char*;
 
+typedef width_t char;
 struct Text {
 	width_t *Data;
 	width_t *Position;
@@ -37,7 +38,7 @@ struct Text {
 Text *Text__Filepath
 (Filepath path) {
 	Text *ret =(Text*)malloc(sizeof(Text));
-	
+
 	FILE *f = fopen(path, "r");
    ret->Position = NULL;
 
@@ -146,7 +147,7 @@ char *Text__select_first_of__width_t
 char *Text__get_current_word__
 () {
   // @char{} word { x, y } = { @->!Position };
-char *word = malloc(sizeof(char) * 2);
+	char *word = malloc(sizeof(char) * 2);
  	word[0] = word[1] = this->Position;
    while (isspace(word[0])) ++word[0];
    while (isalnum(word[0])) --word[0];
@@ -171,6 +172,10 @@ char *word = malloc(sizeof(char) * 2);
  *	of potential cyclical type depedencies where
  *	Array__Symbol for example is also a part
  *	of Symbol.
+ *
+ *	This example seems trivial, however more 
+ *	complicated composition structures
+ *	seem much harder to resolve.
  * */
 
 struct Symbol;
@@ -183,7 +188,7 @@ struct Array__Symbol {
 struct Symbol {
 	struct Symbol *previous;
 	struct Symbol *next;
-	struct Array__Symbol *kids;
+	struct Array__Symbol kids;
 
 	char type;
 	Text text;
@@ -194,29 +199,67 @@ struct Symbol {
   but they do need to 
   initialize their members.
  */
-Symbol *Symbol__init
-(Symbol *this) {
-	
-	return this;
+void Symbol__init
+(Symbol *this, Text *text) {
+	this->previous = NULL;
+	this->next = NULL;
+	this->kids.elems = NULL;
+	this->kids.len = 0;
+	this->text = text;
+	this->type = -1;
 }
+
 
 struct C_Text {
 	Symbol _0_this;
 };
 
-C_Text *C_Text__
-() {
+void C_Text__init__Text
+(C_Text *this, Text *text) {
+	Symbol__init(this, text);
+	this->type = 0;//@Symbol.Type.C_TEXT;
+}
+
+C_Text *C_Text__alloc__Text
+(Text *text) {
 	C_Text *this = (C_Text*)malloc(sizeof(C_Text));
-	
-
-   this->type = 0;//@Symbol.Type.C_TEXT;
-
+	C_Text__init__Text(this, text);
 	return this;
 }
 
-Cx_Text *Cx_Text__
-() {
-	Cx_Text *this = (Cx_Text*)malloc(sizeof(C_Text));
+
+struct Cx_Text {
+	Symbol _0_this;
+};
+
+void Cx_Text__init
+(Cx_Text *this) {
+	this->type = 1;//@Symbol.Type.CX_TEXT
 }
+
+Cx_Text *Cx_Text__alloc__
+(Text *text) {
+	Cx_Text *this = (Cx_Text*)malloc(sizeof(C_Text));
+	Symbol__init(this, text);
+	CX_Text__init(this);
+	return this;
+}
+
+
+struct Cx_Trait {
+	Symbol _0_this;
+	char *name;
+	char operator;
+	char *expression;
+};
+
+char Cx_Trait__Operator[] = "++=**=//=";
+
+Cx_Trait *Cx_Trait__init__Text
+(Cx_Trait *this, Text *text) {
+	this->type = 1;//@Symbol.Type.CX_TRAIT
+	this->text = text;
+}
+
 
 
